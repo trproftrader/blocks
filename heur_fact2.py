@@ -1,5 +1,8 @@
 import sys, math, csv, re, collections
 import numpy as np
+# usage: python3 heur_fact2.py [solutions.csv] k [k ...]   (default csv: solutions_N1e16.csv)
+args=sys.argv[1:]
+CSV=args.pop(0) if args and args[0].endswith('.csv') else 'solutions_N1e16.csv'
 N=10**16; T=14
 def spf_sieve(M):
     spf=list(range(M+1))
@@ -41,11 +44,11 @@ def run(k):
         E[1:,1:]+=PV@PW.T
     return Xmax,E
 obs=collections.Counter()
-for r in csv.DictReader(open('/home/claude/solutions_N1e16.csv')):
+for r in csv.DictReader(open(CSV)):
     if r['type']!='2.17' or '1^M' in r['equation']: continue
     m=re.match(r'b_(\d+)\((\d+)\) \+ (\d+)\^(\d+) = (\d+)\^(\d+)',r['equation'])
     k,x,y,mm,z,n=map(int,m.groups()); obs[(k,mm,n)]+=1
-for k in [int(a) for a in sys.argv[1:]]:
+for k in [int(a) for a in args]:
     Xmax,E=run(k)
     print(f"\n=== k={k}  (x<= {Xmax}) ===  signature (m,n)=(2a,2c): observed / expected(factorisation model)")
     tot_o=tot_e=0; rows=[]

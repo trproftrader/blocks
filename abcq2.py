@@ -1,4 +1,5 @@
-import csv,re,math,collections
+import csv,re,math,collections,sys
+CSV=sys.argv[1] if len(sys.argv)>1 else 'solutions_N1e16.csv'   # usage: python3 abcq2.py [solutions.csv]
 from math import gcd
 def factor(n):
     f=set();d=2
@@ -26,7 +27,7 @@ def radred(vals,primes):
         if any(v%p==0 for v in vals): r*=p
     return r
 rows=[]
-for r in csv.DictReader(open('/home/claude/solutions_N1e16.csv')):
+for r in csv.DictReader(open(CSV)):
     parts=re.split(r' \+ | = ',r['equation'])
     (A,sa),(B,sb),(C,sc)=[parse(t) for t in parts]
     g=gcd(A,B); A2,B2,C2=A//g,B//g,C//g
@@ -47,7 +48,7 @@ for t,v in sorted(by.items()): print(t,"n=%d max q=%.3f #q>1: %d"%(len(v),max(v)
 print()
 import statistics
 th=[];gap=[]
-for r in csv.DictReader(open('/home/claude/solutions_N1e16.csv')):
+for r in csv.DictReader(open(CSV)):
     if r['type']!='2.17' or '1^M' in r['equation']: continue
     mm=re.match(r'b_(\d+)\((\d+)\) \+ (\d+)\^(\d+) = (\d+)\^(\d+)',r['equation'])
     k,x,y,m,z,n=map(int,mm.groups())
@@ -58,7 +59,7 @@ print("2.17: log b_k(x)/log C : min %.3f median %.3f; abc lower bound 1-1/m-1/n:
 print("smallest theta - bound:",min(gap)," median gap:",statistics.median(gap))
 # radical ratio rad(b)/b
 rr=[]
-for r in csv.DictReader(open('/home/claude/solutions_N1e16.csv')):
+for r in csv.DictReader(open(CSV)):
     if r['type']!='2.17' or '1^M' in r['equation']: continue
     mm=re.match(r'b_(\d+)\((\d+)\)',r['equation']); k,x=int(mm.group(1)),int(mm.group(2))
     s=set()
